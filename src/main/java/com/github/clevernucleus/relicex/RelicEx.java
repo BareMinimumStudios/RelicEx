@@ -3,7 +3,7 @@ package com.github.clevernucleus.relicex;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.clevernucleus.dataattributes.api.event.AttributesReloadedEvent;
+import com.github.clevernucleus.dataattributes_dc.api.event.AttributesReloadedEvent;
 import com.github.clevernucleus.relicex.config.RelicExConfig;
 import com.github.clevernucleus.relicex.impl.RarityManager;
 import com.github.clevernucleus.relicex.impl.RelicType;
@@ -27,10 +27,11 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.RandomChanceLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 
 public class RelicEx implements ModInitializer {
 	public static final String MODID = "relicex";
@@ -38,8 +39,8 @@ public class RelicEx implements ModInitializer {
 	public static final RarityManager RARITY_MANAGER = new RarityManager();
 	public static final List<Item> RELICS = new ArrayList<>();
 	public static final List<Item> POTIONS = new ArrayList<>();
-	public static final SoundEvent LEVEL_REFUND_SOUND = new SoundEvent(new Identifier(MODID, "level_refund"));
-	public static final SoundEvent POTION_USE_SOUND = new SoundEvent(new Identifier(MODID, "potion_use"));
+	public static final SoundEvent LEVEL_REFUND_SOUND = SoundEvent.of(new Identifier(MODID, "level_refund"));
+	public static final SoundEvent POTION_USE_SOUND = SoundEvent.of(new Identifier(MODID, "potion_use"));
 	
 	public static final Item SMALL_HEALTH_POTION = registerPotion("small_health_potion", new HealthPotionItem(4.0F));
 	public static final Item MEDIUM_HEALTH_POTION = registerPotion("medium_health_potion", new HealthPotionItem(6.0F));
@@ -55,17 +56,17 @@ public class RelicEx implements ModInitializer {
 	public static final Item RELIC_SHARD = register("relic_shard", new RelicShardItem());
 	
 	private static Item registerRelic(final String keyIn, Item itemIn) {
-		RELICS.add(itemIn = Registry.register(Registry.ITEM, new Identifier(MODID, keyIn), itemIn));
+		RELICS.add(itemIn = Registry.register(Registries.ITEM, new Identifier(MODID, keyIn), itemIn));
 		return itemIn;
 	}
 	
 	private static Item registerPotion(final String keyIn, Item itemIn) {
-		POTIONS.add(itemIn = Registry.register(Registry.ITEM, new Identifier(MODID, keyIn), itemIn));
+		POTIONS.add(itemIn = Registry.register(Registries.ITEM, new Identifier(MODID, keyIn), itemIn));
 		return itemIn;
 	}
 	
 	private static Item register(final String keyIn, Item itemIn) {
-		return Registry.register(Registry.ITEM, new Identifier(MODID, keyIn), itemIn);
+		return Registry.register(Registries.ITEM, new Identifier(MODID, keyIn), itemIn);
 	}
 	
 	private static void addLoot(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, LootTableSource source) {
@@ -93,8 +94,8 @@ public class RelicEx implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		AutoConfig.register(RelicExConfig.class, GsonConfigSerializer::new);
-		Registry.register(Registry.SOUND_EVENT, LEVEL_REFUND_SOUND.getId(), LEVEL_REFUND_SOUND);
-		Registry.register(Registry.SOUND_EVENT, POTION_USE_SOUND.getId(), POTION_USE_SOUND);
+		Registry.register(Registries.SOUND_EVENT, LEVEL_REFUND_SOUND.getId(), LEVEL_REFUND_SOUND);
+		Registry.register(Registries.SOUND_EVENT, POTION_USE_SOUND.getId(), POTION_USE_SOUND);
 		AttributesReloadedEvent.EVENT.register(RARITY_MANAGER::onPropertiesLoaded);
 		LootTableEvents.MODIFY.register(RelicEx::addLoot);
 	}

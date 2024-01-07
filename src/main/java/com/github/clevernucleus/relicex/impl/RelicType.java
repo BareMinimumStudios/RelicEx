@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public enum RelicType {
-	HEAD(EquipmentSlot.HEAD, tooltip -> {}),
-	BODY(EquipmentSlot.CHEST, tooltip -> {}),
-	AMULET((EquipmentSlot)null, tooltip -> {
+	HEAD(ArmorItem.Type.HELMET, tooltip -> {}),
+	BODY(ArmorItem.Type.CHESTPLATE, tooltip -> {}),
+	AMULET((ArmorItem.Type)null, tooltip -> {
 		tooltip.remove(Text.translatable("trinkets.tooltip.slots.single", Text.translatable("trinkets.slot.chest.necklace").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		appendTooltip(tooltip, Text.translatable("trinkets.tooltip.attributes.all").formatted(Formatting.GRAY));
 	}),
-	RING((EquipmentSlot)null, tooltip -> {
+	RING((ArmorItem.Type)null, tooltip -> {
 		tooltip.remove(Text.translatable("trinkets.tooltip.attributes.single", Text.translatable("trinkets.slot.offhand.ring").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		tooltip.remove(Text.translatable("trinkets.tooltip.attributes.single", Text.translatable("trinkets.slot.hand.ring").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		appendTooltip(tooltip, Text.translatable("trinkets.tooltip.slots.single", Text.translatable("trinkets.slot.offhand.ring").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
@@ -25,11 +25,11 @@ public enum RelicType {
 		tooltip.addAll(distinct);
 	});
 	
-	private final EquipmentSlot slot;
+	private final ArmorItem.Type armorItemType;
 	private final Consumer<List<Text>> tooltip;
 	
-	private RelicType(final EquipmentSlot slot, final Consumer<List<Text>> tooltip) {
-		this.slot = slot;
+	private RelicType(final ArmorItem.Type type, final Consumer<List<Text>> tooltip) {
+		this.armorItemType = type;
 		this.tooltip = tooltip;
 	}
 	
@@ -39,8 +39,8 @@ public enum RelicType {
 		tooltip.add(index + 1, Text.translatable("tooltip.relicex.worn").formatted(Formatting.GRAY));
 	}
 	
-	public EquipmentSlot slot() {
-		return this.slot;
+	public ArmorItem.Type getType() {
+		return this.armorItemType;
 	}
 	
 	public Consumer<List<Text>> tooltip() {

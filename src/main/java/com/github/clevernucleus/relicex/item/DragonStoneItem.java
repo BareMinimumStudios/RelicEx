@@ -3,15 +3,18 @@ package com.github.clevernucleus.relicex.item;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.clevernucleus.dataattributes.api.DataAttributesAPI;
+import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
 import com.github.clevernucleus.playerex.api.ExAPI;
 import com.github.clevernucleus.playerex.api.PlayerData;
 import com.mojang.authlib.GameProfile;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -28,7 +31,8 @@ import net.minecraft.world.World;
 
 public class DragonStoneItem extends Item {
 	public DragonStoneItem() {
-		super((new Item.Settings()).maxCount(1).group(ItemGroup.MATERIALS));
+		super((new FabricItemSettings()).maxCount(1));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.add(this));
 	}
 	
 	private static boolean safety(PlayerEntity user, ItemStack stack) {

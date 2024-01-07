@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "relicex:items/amulet_4"
+		"layer0": "relicex:item/amulet_4"
 	}
 }

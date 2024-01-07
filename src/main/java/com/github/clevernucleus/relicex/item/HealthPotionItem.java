@@ -2,10 +2,13 @@ package com.github.clevernucleus.relicex.item;
 
 import com.github.clevernucleus.relicex.RelicEx;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
@@ -16,7 +19,8 @@ public class HealthPotionItem extends Item {
 	private final float amount;
 	
 	public HealthPotionItem(final float amount) {
-		super((new Item.Settings()).maxCount(1).group(ItemGroup.BREWING));
+		super((new FabricItemSettings()).maxCount(1));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(content -> content.add(this));
 		this.amount = amount;
 	}
 	

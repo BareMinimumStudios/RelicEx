@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.clevernucleus.dataattributes.api.attribute.IEntityAttribute;
+import com.github.clevernucleus.dataattributes_dc.api.attribute.IEntityAttribute;
 import com.github.clevernucleus.relicex.RelicEx;
 
 import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public final class RarityManager {
 	private final Map<Identifier, WeightProperty> cachedWeightMap;
@@ -21,8 +21,8 @@ public final class RarityManager {
 	public void onPropertiesLoaded() {
 		this.cachedWeightMap.clear();
 		
-		for(Identifier identifier : Registry.ATTRIBUTE.getIds()) {
-			EntityAttribute attributeIn = Registry.ATTRIBUTE.get(identifier);
+		for(Identifier identifier : Registries.ATTRIBUTE.getIds()) {
+			EntityAttribute attributeIn = Registries.ATTRIBUTE.get(identifier);
 			
 			if(attributeIn == null) continue;
 			IEntityAttribute attribute = (IEntityAttribute)attributeIn;

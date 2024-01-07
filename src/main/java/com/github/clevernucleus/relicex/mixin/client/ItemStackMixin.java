@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.github.clevernucleus.dataattributes.api.attribute.IEntityAttribute;
+import com.github.clevernucleus.dataattributes_dc.api.attribute.IEntityAttribute;
 import com.github.clevernucleus.playerex.api.ExAPI;
 import com.github.clevernucleus.playerex.api.client.ClientUtil;
 import com.github.clevernucleus.relicex.item.RelicItem;
@@ -34,9 +34,8 @@ abstract class ItemStackMixin {
 		ItemStack stack = (ItemStack)(Object)this;
 		Item item = stack.getItem();
 		
-		if(item instanceof RelicItem) {
-			RelicItem relicItem = (RelicItem)item;
-			relicItem.amendTooltip(tooltip);
+		if(item instanceof RelicItem relicItem) {
+            relicItem.amendTooltip(tooltip);
 		}
 	}
 	

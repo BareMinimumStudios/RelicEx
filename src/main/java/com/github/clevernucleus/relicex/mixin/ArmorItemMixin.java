@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import com.github.clevernucleus.dataattributes.api.item.ItemHelper;
+import com.github.clevernucleus.dataattributes_dc.api.item.ItemHelper;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
 import com.google.common.collect.ArrayListMultimap;
@@ -27,11 +27,7 @@ import net.minecraft.world.World;
 
 @Mixin(ArmorItem.class)
 abstract class ArmorItemMixin extends Item implements ItemHelper {
-	
-	@Shadow
-	@Final
-	protected EquipmentSlot slot;
-	
+
 	private ArmorItemMixin(Settings settings) { super(settings); }
 	
 	@Override
@@ -48,9 +44,12 @@ abstract class ArmorItemMixin extends Item implements ItemHelper {
 		NbtCompound tag = stack.getOrCreateNbt();
 		Multimap<EntityAttribute, EntityAttributeModifier> modifiers = ArrayListMultimap.create();
 		Multimap<EntityAttribute, EntityAttributeModifier> fallbacks = super.getAttributeModifiers(stack, slot);
-		EntityAttributeCollection.readFromNbt(tag, this.slot.getName(), modifiers, fallbacks);
+
+		EquipmentSlot equipmentSlot = ((ArmorItem)(Object)this).getSlotType();
+
+		EntityAttributeCollection.readFromNbt(tag, equipmentSlot.getName(), modifiers, fallbacks);
 		
-		return slot == this.slot ? (modifiers.isEmpty() ? fallbacks : modifiers) : fallbacks;
+		return slot == equipmentSlot ? (modifiers.isEmpty() ? fallbacks : modifiers) : fallbacks;
 	}
 	
 	@Override

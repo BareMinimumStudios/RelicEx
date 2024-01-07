@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "relicex:items/chest_0"
+		"layer0": "relicex:item/chest_0"
 	},
 	"overrides": [
 		{

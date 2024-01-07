@@ -1,9 +1,12 @@
 package com.github.clevernucleus.relicex.item;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -15,7 +18,8 @@ import net.minecraft.world.World;
 
 public class RelicShardItem extends Item {
 	public RelicShardItem() {
-		super((new Item.Settings()).fireproof().group(ItemGroup.MATERIALS));
+		super((new FabricItemSettings()).fireproof());
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.add(this));
 	}
 	
 	@Override

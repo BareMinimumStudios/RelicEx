@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "relicex:items/chest_5"
+		"layer0": "relicex:item/chest_5"
 	}
 }

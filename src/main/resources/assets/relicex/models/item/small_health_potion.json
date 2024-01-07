@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "relicex:items/small_health_potion"
+		"layer0": "relicex:item/small_health_potion"
 	}
 }

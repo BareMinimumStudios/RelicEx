@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 
 import com.github.clevernucleus.armorrenderlib.api.ArmorRenderLib;
 import com.github.clevernucleus.armorrenderlib.api.ArmorRenderProvider;
-import com.github.clevernucleus.dataattributes.api.event.AttributesReloadedEvent;
+import com.github.clevernucleus.dataattributes_dc.api.event.AttributesReloadedEvent;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
 import com.google.gson.Gson;

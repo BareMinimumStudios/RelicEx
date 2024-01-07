@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "relicex:items/relic_shard"
+		"layer0": "relicex:item/relic_shard"
 	}
 }

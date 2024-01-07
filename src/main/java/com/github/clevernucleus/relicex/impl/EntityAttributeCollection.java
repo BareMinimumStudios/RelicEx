@@ -8,8 +8,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.github.clevernucleus.dataattributes.api.DataAttributesAPI;
-import com.github.clevernucleus.dataattributes.api.util.RandDistribution;
+import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
+import com.github.clevernucleus.dataattributes_dc.api.util.RandDistribution;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.google.common.collect.Multimap;
 

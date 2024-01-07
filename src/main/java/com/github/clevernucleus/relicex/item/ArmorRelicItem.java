@@ -2,7 +2,7 @@ package com.github.clevernucleus.relicex.item;
 
 import java.util.List;
 
-import com.github.clevernucleus.dataattributes.api.item.ItemHelper;
+import com.github.clevernucleus.dataattributes_dc.api.item.ItemHelper;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
@@ -10,16 +10,14 @@ import com.github.clevernucleus.relicex.impl.RelicType;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterials;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
@@ -28,7 +26,8 @@ import net.minecraft.world.World;
 
 public class ArmorRelicItem extends ArmorItem implements ItemHelper {
 	public ArmorRelicItem(RelicType type) {
-		super(ArmorMaterials.CHAIN, type.slot(), (new Item.Settings()).maxCount(1).group(ItemGroup.COMBAT));
+		super(ArmorMaterials.CHAIN, type.getType(), (new FabricItemSettings()).maxCount(1));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(content -> content.add(this));
 	}
 	
 	@Override
@@ -51,9 +50,9 @@ public class ArmorRelicItem extends ArmorItem implements ItemHelper {
 	public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
 		NbtCompound tag = stack.getOrCreateNbt();
 		Multimap<EntityAttribute, EntityAttributeModifier> modifiers = ArrayListMultimap.create();
-		EntityAttributeCollection.readFromNbt(tag, this.slot.getName(), modifiers, ArrayListMultimap.create());
+		EntityAttributeCollection.readFromNbt(tag, this.getSlotType().getName(), modifiers, ArrayListMultimap.create());
 		
-		return slot == this.slot ? modifiers : super.getAttributeModifiers(stack, slot);
+		return slot == this.getSlotType() ? modifiers : super.getAttributeModifiers(stack, slot);
 	}
 	
 	@Override

@@ -3,7 +3,7 @@ package com.github.clevernucleus.relicex.impl;
 import java.util.Map;
 import java.util.UUID;
 
-import com.github.clevernucleus.dataattributes.api.util.Maths;
+import com.github.clevernucleus.dataattributes_dc.api.util.Maths;
 
 public enum SlotKey {
 	HEAD("head", UUID.fromString("a13445e4-52da-4636-ae11-1219aa778d34")),

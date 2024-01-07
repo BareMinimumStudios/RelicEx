@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "relicex:items/lesser_orb_of_regret"
+		"layer0": "relicex:item/lesser_orb_of_regret"
 	}
 }

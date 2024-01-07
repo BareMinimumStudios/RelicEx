@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.github.clevernucleus.dataattributes.api.DataAttributesAPI;
-import com.github.clevernucleus.dataattributes.api.util.RandDistribution;
+import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
+import com.github.clevernucleus.dataattributes_dc.api.util.RandDistribution;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.github.clevernucleus.relicex.config.RelicExConfig;
 

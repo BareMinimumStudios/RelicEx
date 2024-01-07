@@ -3,7 +3,7 @@ package com.github.clevernucleus.relicex.item;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.clevernucleus.dataattributes.api.item.ItemHelper;
+import com.github.clevernucleus.dataattributes_dc.api.item.ItemHelper;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
 import com.github.clevernucleus.relicex.impl.RelicType;
@@ -13,16 +13,20 @@ import com.google.common.collect.Multimap;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.SlotType;
 import dev.emi.trinkets.api.TrinketItem;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
@@ -30,7 +34,8 @@ public class RelicItem extends TrinketItem implements ItemHelper {
 	private final RelicType type;
 	
 	public RelicItem(final RelicType type) {
-		super((new Item.Settings()).maxCount(1).group(ItemGroup.COMBAT));
+		super((new FabricItemSettings()).maxCount(1));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(content -> content.add(this));
 		this.type = type;
 	}
 	
@@ -67,6 +72,6 @@ public class RelicItem extends TrinketItem implements ItemHelper {
 	
 	@Override
 	public SoundEvent getEquipSound(ItemStack itemStack) {
-		return super.getEquipSound();
+		return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC; // todo: unsure about implementation here.
 	}
 }
