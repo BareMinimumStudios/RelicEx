@@ -35,6 +35,12 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 dependencies {
@@ -60,8 +66,8 @@ dependencies {
 	modImplementation "maven.modrinth:projectile-damage-attribute:${project.projectile_damage_version}"
 	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api}"
 	implementation 'net.objecthunter:exp4j:0.4.8'
-	modImplementation "maven.modrinth:playerex:${project.playerex_version}"
-	modImplementation include("maven.modrinth:armor-render-lib:${project.arl_version}")
+	modImplementation "maven.modrinth:playerex-directors-cut:${project.playerex_version}"
+	modImplementation include("curse.maven:armorrenderlib-directors-cut-959495:5023648")
 	modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 	
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
