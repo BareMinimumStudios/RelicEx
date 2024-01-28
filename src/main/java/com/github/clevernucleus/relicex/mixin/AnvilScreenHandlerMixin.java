@@ -1,5 +1,6 @@
 package com.github.clevernucleus.relicex.mixin;
 
+import net.minecraft.screen.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,14 +18,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.screen.ForgingScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.SmithingScreenHandler;
 
-@Mixin(SmithingScreenHandler.class)
-abstract class SmithingScreenHandlerMixin extends ForgingScreenHandler {
-	private SmithingScreenHandlerMixin(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) { super(type, syncId, playerInventory, context); }
+@Mixin(AnvilScreenHandler.class)
+abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
+	private AnvilScreenHandlerMixin(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) { super(type, syncId, playerInventory, context); }
 	
 	@Inject(method = "canTakeOutput", at = @At("HEAD"), cancellable = true)
 	private void relicex_canTakeOutput(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
