@@ -50,6 +50,7 @@ abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
         		tag2.put(EntityAttributeCollection.KEY_ATTRIBUTES, list);
         		tag2.putString(EntityAttributeCollection.KEY_RARENESS, rareness);
         		this.output.setStack(0, itemStack3);
+				this.sendContentUpdates();
         		ci.cancel();
 			}
 		}
