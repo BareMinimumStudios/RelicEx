@@ -1,7 +1,10 @@
 package com.github.clevernucleus.relicex.mixin;
 
 import net.minecraft.screen.*;
+import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -18,9 +21,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import oshi.util.Util;
 
 @Mixin(AnvilScreenHandler.class)
 abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
+	@Shadow private @Nullable String newItemName;
+
 	private AnvilScreenHandlerMixin(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) { super(type, syncId, playerInventory, context); }
 	
 	@Inject(method = "canTakeOutput", at = @At("HEAD"), cancellable = true)
@@ -49,7 +55,10 @@ abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
         		String rareness = tag.getString(EntityAttributeCollection.KEY_RARENESS);
         		tag2.put(EntityAttributeCollection.KEY_ATTRIBUTES, list);
         		tag2.putString(EntityAttributeCollection.KEY_RARENESS, rareness);
-        		this.output.setStack(0, itemStack3);
+				if (!Util.isBlank(this.newItemName)) {
+					itemStack3.setCustomName(Text.literal(this.newItemName));
+				}
+				this.output.setStack(0, itemStack3);
 				this.sendContentUpdates();
         		ci.cancel();
 			}
