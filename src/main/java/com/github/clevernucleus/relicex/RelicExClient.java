@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 
 import com.github.clevernucleus.armorrenderlib.api.ArmorRenderLib;
 import com.github.clevernucleus.armorrenderlib.api.ArmorRenderProvider;
-import com.github.clevernucleus.dataattributes_dc.api.event.AttributesReloadedEvent;
+import com.bibireden.data_attributes.api.event.AttributesReloadedEvent;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
 import com.google.gson.Gson;
@@ -67,7 +67,6 @@ public class RelicExClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		RelicEx.RELICS.forEach(item -> ModelPredicateProviderRegistry.register(item, RARENESS, RelicExClient::predicate));
 		ArmorRenderLib.register(RelicExClient::render, RelicEx.HEAD_RELIC, RelicEx.CHEST_RELIC);
-		AttributesReloadedEvent.EVENT.register(RelicEx.RARITY_MANAGER::onPropertiesLoaded);
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(RARENESS_COLOR);
 	}
 	
@@ -101,7 +100,7 @@ public class RelicExClient implements ClientModInitializer {
 						BufferedReader reader = entry.getValue().getReader();
 						
 						try {
-							RarenessFormatting json = JsonHelper.deserialize(GSON, (Reader)reader, RarenessFormatting.class);
+							RarenessFormatting json = JsonHelper.deserialize(GSON, reader, RarenessFormatting.class);
 							
 							if(json != null) {
 								RarenessFormatting object = cache.put(identifier, json);
@@ -120,8 +119,8 @@ public class RelicExClient implements ClientModInitializer {
 					}
 				}
 				
-				Map<Rareness, Formatting> data = new HashMap<Rareness, Formatting>();
-				cache.forEach((id, json) -> json.values.forEach(data::put));
+				Map<Rareness, Formatting> data = new HashMap<>();
+				cache.forEach((id, json) -> data.putAll(json.values));
 				
 				return data;
 			}, executor);
@@ -129,9 +128,7 @@ public class RelicExClient implements ClientModInitializer {
 		
 		@Override
 		public CompletableFuture<Void> apply(Map<Rareness, Formatting> data, ResourceManager manager, Profiler profiler, Executor executor) {
-			return CompletableFuture.runAsync(() -> {
-				this.data = data;
-			}, executor);
+			return CompletableFuture.runAsync(() -> this.data = data, executor);
 		}
 		
 		@Override

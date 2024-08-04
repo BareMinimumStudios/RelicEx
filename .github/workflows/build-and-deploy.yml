@@ -1,8 +1,13 @@
-name: Build and Deploy
+name: Deployment (J17)
 on:
   push:
-    branches:
-      - '*/main'
+    branches-ignore:
+      - master
+      - "**/dev**"
+      - "**-dev"
+      - "**-dev**"
+      - dev
+
 
 jobs:
   build-and-deploy:
@@ -10,9 +15,7 @@ jobs:
       BRANCH_PREFIX: $(cat gradle.properties | grep mod_version | cut -d'+' -f2)
     strategy:
       matrix:
-        java: [
-          17,
-        ]
+        java: [17]
     runs-on: ubuntu-latest
     steps:
       - name: check environment variables
@@ -29,55 +32,43 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: build
-        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}/main'
+        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}'
         run: ./gradlew build
       - name: capture build artifacts
         if: |
           ${{ matrix.java == '17' }}
-          github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}/main'
+          github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}'
         uses: actions/upload-artifact@v3
         with:
           name: Artifacts
           path: build/libs/
-      - name: get mod version
-        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}/main'
+      - name: get mod version and loader
+        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}'
         id: mod_version
         run: |
+          loader_val=$(grep "loader" gradle.properties | cut -d'=' -f2 | tr -d '\n')
           mod_version_val=$(grep "mod_version" gradle.properties | cut -d'=' -f2 | tr -d '\n')
-          echo "mod_version=$mod_version_val" >> $GITHUB_OUTPUT
+          echo "mod_version=$mod_version_val-$loader_val" >> $GITHUB_OUTPUT
+          echo "commitish=$mod_version_val/$loader_val" >> $GITHUB_OUTPUT
       - name: get minecraft version
-        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}/main'
+        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}'
         id: minecraft_version
         run: |
-          minecraft_version_val=$(grep "mod_version" gradle.properties | cut -d'+' -f2 | tr -d '\n')
+          minecraft_version_val=$(grep "mod_version" gradle.properties | cut -d'+' -f2 | cut -d'-' -f1 | tr -d '\n')
           echo "minecraft_version=$minecraft_version_val" >> $GITHUB_OUTPUT
       - name: deploy with mc-publish
-        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}/main'
+        if: github.ref == 'refs/heads/${{ env.BRANCH_PREFIX }}'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          curseforge-id: 439281
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          dependencies: |
-            fabric-api@0.76.0+1.19.2(required){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)
-            playerex@3.5.4+1.19.2(required){modrinth:o5GUN4b1}{curseforge:409221}#(ignore:github)
-            cloth-config@8.2.88(required){modrinth:9s6osm5g}{curseforge:348521}#(ignore:github)
-            trinkets@3.4.1(required){modrinth:5aaWibi9}{curseforge:341284}#(ignore:github)
-            armor-render-lib@0.2.6(embedded){modrinth:rdrxR9PW}#(ignore:curseforge)#(ignore:github)
-
-          modrinth-id: LwwtuiRk
           modrinth-token: "${{ secrets.MODRINTH_TOKEN }}"
-          
-          # Modrinth has issues accepting javadocs right now
 
-          github-tag: "${{ steps.mod_version.outputs.mod_version }}"
+          github-tag: ${{ steps.mod_version.outputs.mod_version }}
           github-token: ${{ secrets.REPOSITORY_TOKEN }}
-          github-commitish: ${{ steps.minecraft_version.outputs.minecraft_version }}/main
+          github-commitish: ${{ steps.commitish.outputs.commitish }}
 
-          version: "${{ steps.mod_version.outputs.mod_version }}"
-          version-type: release
+          version: "${{ steps.outputs.mod_version }}"
           changelog-file: CHANGELOG.md
 
-          loaders: fabric
           game-versions: "${{ steps.minecraft_version.outputs.minecraft_version }}"
           java: "${{ matrix.java }}"

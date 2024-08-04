@@ -2,7 +2,8 @@ package com.github.clevernucleus.relicex.impl;
 
 import java.util.Map;
 
-import com.github.clevernucleus.dataattributes_dc.api.util.Maths;
+
+import com.bibireden.data_attributes.api.util.Maths;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.github.clevernucleus.relicex.RelicExClient;
 

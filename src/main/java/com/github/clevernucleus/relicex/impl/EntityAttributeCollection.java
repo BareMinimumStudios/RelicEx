@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
-import com.github.clevernucleus.dataattributes_dc.api.util.RandDistribution;
+import com.bibireden.data_attributes.api.util.RandDistribution;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.google.common.collect.Multimap;
 
@@ -19,6 +17,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
@@ -36,7 +35,7 @@ public final class EntityAttributeCollection {
 	
 	private static float randomAttribute(EntityAttributeCollection collection) {
 		RandDistribution<Identifier> distributor = new RandDistribution<>(null);
-		RandDistribution<Pair<Double, Float>> values = new RandDistribution<>(new Pair<Double, Float>(0.0D, 1.0F));
+		RandDistribution<Pair<Double, Float>> values = new RandDistribution<>(new Pair<>(0.0D, 1.0F));
 		
 		for(Identifier identifier : RelicEx.RARITY_MANAGER.keys()) {
 			WeightProperty weight = RelicEx.RARITY_MANAGER.weight(identifier);
@@ -75,12 +74,13 @@ public final class EntityAttributeCollection {
 		for(int i = 0; i < list.size(); i++) {
 			NbtCompound entry = list.getCompound(i);
 			Identifier identifier = new Identifier(entry.getString(KEY_NAME));
-			Supplier<EntityAttribute> attribute = DataAttributesAPI.getAttribute(identifier);
-			
-			if(attribute.get() == null) continue;
-			Operation operation = Operation.fromId((int)entry.getByte(KEY_OPERATION));
+
+			EntityAttribute attribute = Registries.ATTRIBUTE.get(identifier);
+			if (attribute == null) continue;
+
+			Operation operation = Operation.fromId(entry.getByte(KEY_OPERATION));
 			EntityAttributeModifier modifier = new EntityAttributeModifier(SlotKey.from(slot).uuid(), "RelicEx Modifier", entry.getDouble(KEY_VALUE), operation);
-			modifiersNBT.put(attribute.get(), modifier);
+			modifiersNBT.put(attribute, modifier);
 		}
 		
 		for(EntityAttribute attributeITM : modifiersITM.keySet()) {
@@ -121,9 +121,9 @@ public final class EntityAttributeCollection {
 		for(int i = 0; i < list.size(); i++) {
 			NbtCompound entry = list.getCompound(i);
 			Identifier identifier = new Identifier(entry.getString(KEY_NAME));
-			Supplier<EntityAttribute> attribute = DataAttributesAPI.getAttribute(identifier);
+			EntityAttribute attribute = Registries.ATTRIBUTE.get(identifier);
 			
-			if(attribute.get() == null || !attribute.get().equals(attributeIn) || (int)entry.getByte(KEY_OPERATION) != Operation.ADDITION.getId()) continue;
+			if(attribute == null || !attribute.equals(attributeIn) || (int)entry.getByte(KEY_OPERATION) != Operation.ADDITION.getId()) continue;
 			return (float)entry.getDouble(KEY_VALUE);
 		}
 		

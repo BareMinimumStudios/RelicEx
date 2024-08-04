@@ -1,18 +1,21 @@
 package com.github.clevernucleus.relicex.item;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
-import com.github.clevernucleus.playerex.api.ExAPI;
-import com.github.clevernucleus.playerex.api.PlayerData;
-import com.github.clevernucleus.relicex.RelicEx;
+import com.bibireden.data_attributes.api.DataAttributesAPI;
+import com.bibireden.playerex.PlayerEX;
+import com.bibireden.playerex.api.PlayerEXAPI;
+import com.bibireden.playerex.api.attribute.PlayerEXAttributes;
+import com.bibireden.playerex.api.event.PlayerEXSoundEvents;
+import com.bibireden.playerex.components.PlayerEXComponents;
+import com.bibireden.playerex.components.player.IPlayerDataComponent;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
@@ -44,27 +47,24 @@ public class OrbOfRegretItem extends Item {
 	
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-		return DataAttributesAPI.ifPresent(user, ExAPI.LEVEL, super.use(world, user, hand), value -> {
-			ItemStack itemStack = user.getStackInHand(hand);
-			PlayerData playerData = ExAPI.PLAYER_DATA.get(user);
-			int refundPoints = 0;
-			
-			for(var refundCondition : ExAPI.getRefundConditions()) {
-				refundPoints += refundCondition.apply(playerData, user);
-			}
-			
-			if(!(value > 0.0D) || !(refundPoints > 0)) return super.use(world, user, hand);
-			if(world.isClient) {
-				user.playSound(RelicEx.LEVEL_REFUND_SOUND, SoundCategory.NEUTRAL, ExAPI.getConfig().skillUpVolume(), 1.0F);
-			} else {
-				playerData.addRefundPoints(this.greater ? refundPoints : 1);
-				
-				if(!user.isCreative()) {
-					itemStack.decrement(1);
+		return DataAttributesAPI.getValue(PlayerEXAttributes.LEVEL, user)
+			.map((value) -> {
+				ItemStack stack = user.getStackInHand(hand);
+				IPlayerDataComponent component = user.getComponent(PlayerEXComponents.PLAYER_DATA);
+
+				AtomicInteger refundPoints = new AtomicInteger();
+				PlayerEXAPI.getRefundConditions().forEach((condition) -> refundPoints.getAndAdd(condition.invoke(component, user).intValue()));
+				if (value < 0.0 || refundPoints.get() < 0) return super.use(world, user, hand);
+
+				if(world.isClient) {
+					user.playSound(PlayerEXSoundEvents.REFUND_SOUND, SoundCategory.NEUTRAL, PlayerEX.CONFIG.getSoundSettings().getSkillUpVolume(), 1F);
+				} else {
+					component.addRefundablePoints(this.greater ? refundPoints.get() : 1);
+					if(!user.isCreative()) stack.decrement(1);
 				}
-			}
-			
-			return TypedActionResult.success(itemStack, world.isClient);
-		});
+
+				return TypedActionResult.success(stack, world.isClient);
+			})
+			.orElse(super.use(world, user, hand));
 	}
 }

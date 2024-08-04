@@ -2,11 +2,9 @@ package com.github.clevernucleus.relicex.mixin;
 
 import java.util.List;
 
-import org.spongepowered.asm.mixin.Final;
+import com.bibireden.data_attributes.api.item.ItemHelper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-import com.github.clevernucleus.dataattributes_dc.api.item.ItemHelper;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
 import com.google.common.collect.ArrayListMultimap;
@@ -53,12 +51,12 @@ abstract class ArmorItemMixin extends Item implements ItemHelper {
 	}
 	
 	@Override
-	public int getProtection(ItemStack itemStack) {
-		return (int)EntityAttributeCollection.getValueIfArmor(itemStack.getOrCreateNbt(), EntityAttributes.GENERIC_ARMOR, ((ArmorItem)(Object)this).getProtection());
+	public Integer getProtection(ItemStack itemStack) {
+		return (int) EntityAttributeCollection.getValueIfArmor(itemStack.getOrCreateNbt(), EntityAttributes.GENERIC_ARMOR, ((ArmorItem)(Object)this).getProtection());
 	}
 	
 	@Override
-	public float getToughness(ItemStack itemStack) {
-		return (int)EntityAttributeCollection.getValueIfArmor(itemStack.getOrCreateNbt(), EntityAttributes.GENERIC_ARMOR_TOUGHNESS, ((ArmorItem)(Object)this).getToughness());
+	public Float getToughness(ItemStack itemStack) {
+		return EntityAttributeCollection.getValueIfArmor(itemStack.getOrCreateNbt(), EntityAttributes.GENERIC_ARMOR_TOUGHNESS, ((ArmorItem)(Object)this).getToughness());
 	}
 }

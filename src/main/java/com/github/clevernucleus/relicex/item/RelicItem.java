@@ -3,7 +3,7 @@ package com.github.clevernucleus.relicex.item;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.clevernucleus.dataattributes_dc.api.item.ItemHelper;
+import com.bibireden.data_attributes.api.item.ItemHelper;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
 import com.github.clevernucleus.relicex.impl.RelicType;
@@ -19,8 +19,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;

@@ -1,6 +1,11 @@
 plugins {
-	id 'fabric-loom' version '1.1-SNAPSHOT'
+	id 'fabric-loom' version "1.7-SNAPSHOT"
 	id 'maven-publish'
+	id "org.jetbrains.kotlin.jvm" version "2.0.0"
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/relicex.accesswidener")
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -12,6 +17,10 @@ group = project.maven_group
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "wispForestReleases"
+		url = uri("https://maven.wispforest.io/releases")
+	}
 	maven {
 		name = "Ladysnake"
 		url = "https://maven.ladysnake.org/releases"
@@ -46,13 +55,13 @@ repositories {
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	
+
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
-	modImplementation "maven.modrinth:data-attributes-directors-cut:${project.dataattributes_version}"
+
+	modImplementation "maven.modrinth:data-attributes-directors-cut:${project.data_attributes_version}"
 	modImplementation "maven.modrinth:opc-directors-cut:${project.opc_version}"
-	
+
 	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
@@ -62,21 +71,30 @@ dependencies {
 	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-chunk:${project.cardinal_components_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	
-	modImplementation "maven.modrinth:projectile-damage-attribute:${project.projectile_damage_version}"
+
+	modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}")
 	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api}"
 	implementation 'net.objecthunter:exp4j:0.4.8'
-	modImplementation "maven.modrinth:playerex-directors-cut:${project.playerex_version}"
-	modImplementation include("curse.maven:armorrenderlib-directors-cut-959495:5023648")
+	modImplementation include("maven.modrinth:armorrenderlib-directors-cut:${project.arl_version}")
+	modApi "maven.modrinth:playerex-directors-cut:${project.playerex_version}"
 	modImplementation "dev.emi:trinkets:${project.trinkets_version}"
-	
+
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	
+
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+
+	modImplementation include("io.wispforest:endec:${project.endec_version}")
+	modImplementation include("io.wispforest.endec:gson:${project.endec_gson_version}")
+	modImplementation include("io.wispforest.endec:netty:${project.endec_netty_version}")
+
+	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
+	include "io.wispforest:owo-sentinel:${project.owo_version}"
+
+	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 }
 
 processResources {
@@ -89,6 +107,10 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 17
+}
+
+fabricApi {
+	configureDataGeneration()
 }
 
 java {

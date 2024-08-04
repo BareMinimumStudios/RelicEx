@@ -3,7 +3,7 @@ package com.github.clevernucleus.relicex;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.clevernucleus.dataattributes_dc.api.event.AttributesReloadedEvent;
+import com.bibireden.data_attributes.api.event.AttributesReloadedEvent;
 import com.github.clevernucleus.relicex.config.RelicExConfig;
 import com.github.clevernucleus.relicex.impl.RarityManager;
 import com.github.clevernucleus.relicex.impl.RelicType;
@@ -20,6 +20,7 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableSource;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
@@ -29,13 +30,13 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registry;
 
 public class RelicEx implements ModInitializer {
 	public static final String MODID = "relicex";
-	public static final String WEIGHT_PROPERTY = "weight";
 	public static final RarityManager RARITY_MANAGER = new RarityManager();
 	public static final List<Item> RELICS = new ArrayList<>();
 	public static final List<Item> POTIONS = new ArrayList<>();
@@ -93,14 +94,16 @@ public class RelicEx implements ModInitializer {
 	
 	@Override
 	public void onInitialize() {
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(RARITY_MANAGER);
+
 		AutoConfig.register(RelicExConfig.class, GsonConfigSerializer::new);
 		Registry.register(Registries.SOUND_EVENT, LEVEL_REFUND_SOUND.getId(), LEVEL_REFUND_SOUND);
 		Registry.register(Registries.SOUND_EVENT, POTION_USE_SOUND.getId(), POTION_USE_SOUND);
-		AttributesReloadedEvent.EVENT.register(RARITY_MANAGER::onPropertiesLoaded);
 		LootTableEvents.MODIFY.register(RelicEx::addLoot);
 	}
 	
 	public static RelicExConfig config() {
+
 		return AutoConfig.getConfigHolder(RelicExConfig.class).get();
 	}
 }

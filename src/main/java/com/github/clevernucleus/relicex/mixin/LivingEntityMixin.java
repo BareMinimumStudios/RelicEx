@@ -2,13 +2,15 @@ package com.github.clevernucleus.relicex.mixin;
 
 import java.util.Random;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
-import com.github.clevernucleus.dataattributes_dc.api.util.RandDistribution;
+import com.bibireden.data_attributes.api.DataAttributesAPI;
+import com.bibireden.data_attributes.api.util.RandDistribution;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.github.clevernucleus.relicex.config.RelicExConfig;
 
@@ -22,22 +24,29 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 @Mixin(LivingEntity.class)
-abstract class LivingEntityMixin {
-	
+abstract class LivingEntityMixin extends Entity {
+
+	public LivingEntityMixin(EntityType<?> type, World world) {
+		super(type, world);
+	}
+
 	@Inject(method = "dropLoot", at = @At("TAIL"))
-	private void relicex_dropLoot(DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
-		LivingEntity livingEntity = (LivingEntity)(Object)this;
+	private void relicex$dropLoot(DamageSource source, boolean causedByPlayer, CallbackInfo ci) {
 		RelicExConfig config = RelicEx.config();
 		
-		if(!(livingEntity instanceof Monster) || config.mobDropBlacklist.contains(EntityType.getId(livingEntity.getType()).toString())) return;
+		if(!(this instanceof Monster) || config.mobDropBlacklist.contains(EntityType.getId(this.getType()).toString())) return;
+
 		Random random = new Random();
 		
 		if(config.dropsOnlyFromPlayerKills && !causedByPlayer) return;
-		float chance = 0.01F * (float)config.mobsDropLootChance;
-		float roll = (source.getAttacker() instanceof LivingEntity) ? DataAttributesAPI.ifPresent((LivingEntity)source.getAttacker(), () -> EntityAttributes.GENERIC_LUCK, chance, value -> chance * (1.0F + (float)(double)value)) : chance;
+		double chance = 0.01 * config.mobsDropLootChance;
+		double roll = (source.getAttacker() instanceof LivingEntity) ? DataAttributesAPI.getValue(EntityAttributes.GENERIC_LUCK, (LivingEntity) source.getAttacker())
+			.map(value -> chance * (1.0 + value))
+			.orElse(chance) : chance;
 		
 		if(!(random.nextFloat() < roll)) return;
-		RandDistribution<Item> distributor = new RandDistribution<Item>(Items.AIR);
+
+		RandDistribution<Item> distributor = new RandDistribution<>(Items.AIR);
 		distributor.add(RelicEx.RELICS.get(random.nextInt(RelicEx.RELICS.size())), 0.01F * (float)config.mobDropIsRelicChance);
 		distributor.add(RelicEx.LESSER_ORB_OF_REGRET, 0.01F * (float)config.mobDropIsLesserOrbChance);
 		distributor.add(RelicEx.GREATER_ORB_OF_REGRET, 0.01F * (float)config.mobDropIsGreaterOrbChance);
@@ -45,6 +54,6 @@ abstract class LivingEntityMixin {
 		distributor.add(RelicEx.POTIONS.get(random.nextInt(RelicEx.POTIONS.size())), 0.01F * (float)config.mobDropIsPotionChance);
 		
 		Item item = distributor.getDistributedRandom();
-		livingEntity.dropStack(new ItemStack(item, 1));
+		this.dropStack(new ItemStack(item, 1));
 	}
 }

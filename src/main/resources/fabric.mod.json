@@ -3,14 +3,14 @@
     "id": "relicex",
     "version": "${version}",
     "name": "RelicEx",
-    "description": "Bridges Trinkets and PlayerEx.",
+    "description": "Bridges Trinkets and PlayerEX.",
     "authors": [
         "CleverNucleus",
-        "MerryweatherLost"
+        "Bare Minimum Studios"
     ],
     "contact": {
-        "homepage": "https://www.curseforge.com/minecraft/mc-mods/relicex",
-        "sources": "https://github.com/CleverNucleus/RelicEx"
+        "homepage": "https://www.curseforge.com/minecraft/mc-mods/relicex-directors-cut",
+        "sources": "https://github.com/BareMinimumStudios/RelicEx"
     },
     
     "license": "MIT",
@@ -34,10 +34,21 @@
     "depends": {
         "fabricloader": ">=0.14.25",
         "fabric-api": ">=0.83.0",
-		"playerex": ">=3.6.0",
+		"playerex": ">=4.0.0",
         "trinkets": ">=3.4.1",
         "cloth-config": ">=8.0.0",
         "minecraft": "1.20.1",
         "java": ">=17"
+    },
+    "custom": {
+        "mc-publish": {
+            "modrinth": "W33kBqkh",
+            "curseforge": 959486,
+            "loaders": ["fabric", "quilt"],
+            "dependencies": [
+                "fabric-api@>=0.92.2+1.20.1(required){modrinth:P7dR8mSH}{curseforge:306612}#(ignore:github)",
+                "playerex@>=4.0.0+1.20.1(required){modrinth:4UKlJSdk}{curseforge:958325}#(ignore:github)"
+            ]
+        }
     }
 }

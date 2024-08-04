@@ -11,16 +11,16 @@ import net.minecraft.util.Formatting;
 public enum RelicType {
 	HEAD(ArmorItem.Type.HELMET, tooltip -> {}),
 	BODY(ArmorItem.Type.CHESTPLATE, tooltip -> {}),
-	AMULET((ArmorItem.Type)null, tooltip -> {
+	AMULET(null, tooltip -> {
 		tooltip.remove(Text.translatable("trinkets.tooltip.slots.single", Text.translatable("trinkets.slot.chest.necklace").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		appendTooltip(tooltip, Text.translatable("trinkets.tooltip.attributes.all").formatted(Formatting.GRAY));
 	}),
-	RING((ArmorItem.Type)null, tooltip -> {
+	RING(null, tooltip -> {
 		tooltip.remove(Text.translatable("trinkets.tooltip.attributes.single", Text.translatable("trinkets.slot.offhand.ring").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		tooltip.remove(Text.translatable("trinkets.tooltip.attributes.single", Text.translatable("trinkets.slot.hand.ring").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		appendTooltip(tooltip, Text.translatable("trinkets.tooltip.slots.single", Text.translatable("trinkets.slot.offhand.ring").formatted(Formatting.BLUE)).formatted(Formatting.GRAY));
 		
-		List<Text> distinct = tooltip.stream().distinct().collect(Collectors.toList());
+		List<Text> distinct = tooltip.stream().distinct().toList();
 		tooltip.clear();
 		tooltip.addAll(distinct);
 	});
@@ -28,7 +28,7 @@ public enum RelicType {
 	private final ArmorItem.Type armorItemType;
 	private final Consumer<List<Text>> tooltip;
 	
-	private RelicType(final ArmorItem.Type type, final Consumer<List<Text>> tooltip) {
+	RelicType(final ArmorItem.Type type, final Consumer<List<Text>> tooltip) {
 		this.armorItemType = type;
 		this.tooltip = tooltip;
 	}

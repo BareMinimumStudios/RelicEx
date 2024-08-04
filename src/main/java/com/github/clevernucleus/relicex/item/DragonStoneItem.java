@@ -3,9 +3,10 @@ package com.github.clevernucleus.relicex.item;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.clevernucleus.dataattributes_dc.api.DataAttributesAPI;
-import com.github.clevernucleus.playerex.api.ExAPI;
-import com.github.clevernucleus.playerex.api.PlayerData;
+import com.bibireden.data_attributes.api.DataAttributesAPI;
+import com.bibireden.playerex.PlayerEX;
+import com.bibireden.playerex.api.attribute.PlayerEXAttributes;
+import com.bibireden.playerex.components.PlayerEXComponents;
 import com.mojang.authlib.GameProfile;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -13,7 +14,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -75,30 +75,29 @@ public class DragonStoneItem extends Item {
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
 		user.getItemCooldownManager().set(this, 20);
-		return DataAttributesAPI.ifPresent(user, ExAPI.LEVEL, super.use(world, user, hand), value -> {
-			if(!(value > 0.0D)) return super.use(world, user, hand);
-			ItemStack itemStack = user.getStackInHand(hand);
-			
-			if(safety(user, itemStack)) {
-				if(world.isClient) {
-					user.playSound(SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.NEUTRAL, 0.75F, 1.0F);
-				} else {
-					PlayerData playerData = ExAPI.PLAYER_DATA.get(user);
-					playerData.reset(ExAPI.getConfig().resetOnDeath());
-					
-					if(!user.isCreative()) {
-						itemStack.decrement(1);
+		return DataAttributesAPI.getValue(PlayerEXAttributes.LEVEL, user)
+			.map((value) -> {
+				if(!(value > 0.0D)) return super.use(world, user, hand);
+				ItemStack itemStack = user.getStackInHand(hand);
+
+				if(safety(user, itemStack)) {
+					if(world.isClient) {
+						user.playSound(SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.NEUTRAL, 0.75F, 1.0F);
+					} else {
+						user.getComponent(PlayerEXComponents.PLAYER_DATA).reset(0);
+
+						if(!user.isCreative()) itemStack.decrement(1);
 					}
+
+					return TypedActionResult.success(itemStack, world.isClient);
 				}
-				
-				return TypedActionResult.success(itemStack, world.isClient);
-			}
-			
-			if(world.isClient) {
-				user.sendMessage(Text.translatable("message.relicex.dragon_stone"), true);
-			}
-			
-			return super.use(world, user, hand);
-		});
+
+				if(world.isClient) {
+					user.sendMessage(Text.translatable("message.relicex.dragon_stone"), true);
+				}
+
+				return super.use(world, user, hand);
+			})
+			.orElse(super.use(world, user, hand));
 	}
 }

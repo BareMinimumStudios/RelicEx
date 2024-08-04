@@ -2,7 +2,7 @@ package com.github.clevernucleus.relicex.item;
 
 import java.util.List;
 
-import com.github.clevernucleus.dataattributes_dc.api.item.ItemHelper;
+import com.bibireden.data_attributes.api.item.ItemHelper;
 import com.github.clevernucleus.relicex.RelicEx;
 import com.github.clevernucleus.relicex.impl.EntityAttributeCollection;
 import com.github.clevernucleus.relicex.impl.Rareness;
@@ -66,12 +66,12 @@ public class ArmorRelicItem extends ArmorItem implements ItemHelper {
 	}
 	
 	@Override
-	public int getProtection(ItemStack itemStack) {
+	public Integer getProtection(ItemStack itemStack) {
 		return (int)EntityAttributeCollection.getValueIfArmor(itemStack.getOrCreateNbt(), EntityAttributes.GENERIC_ARMOR, 0.0F);
 	}
 	
 	@Override
-	public float getToughness(ItemStack itemStack) {
+	public Float getToughness(ItemStack itemStack) {
 		return EntityAttributeCollection.getValueIfArmor(itemStack.getOrCreateNbt(), EntityAttributes.GENERIC_ARMOR_TOUGHNESS, 0.0F);
 	}
 	

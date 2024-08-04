@@ -1,11 +1,11 @@
-### Changelog
+## Notes 🍎
+- 💖 ***This is deemed to be a "legacy" version due to adapting to the original mod by the book. Previous issues with this mod may be present, but a rewrite is underway.***
 
-*Requires PlayerEx `3.5.4+1.19.2` or newer.
+- This update is meant to work with the recent **PlayerEX** (`+4.x.x+1.20.1`)
+- Certain attributes may not have the proper formatting at the moment.
+- This will be a present solution until a proper rewrite is completed.
 
--Removed `playerex:ranged_damage` attribute reference.
-
-+Added `projectile_damage:generic` attribute reference.
-
-*Reverted to Fabric Loader `0.14.10`.
-
-*Updated Fabric API required version to `0.76.0+1.19.2` or newer.
+## Changes 🌽
+- Weights have been moved directly to his mod instead of having any relationship to `properties`. More documentation on this later.
+- Removed projectile damage attribute in favor of the ranged weapon API.
+- Updated all dependencies.
