@@ -50,7 +50,7 @@ public class TomeItem extends Item {
 			.map((value) -> {
 				ItemStack stack = user.getStackInHand(hand);
 
-				if (value >= ((IEntityAttribute)PlayerEXAttributes.LEVEL).data_attributes$max() - 1.0D) return super.use(world, user, hand);
+				if (value >= PlayerEXAttributes.LEVEL.getMaxValue() - 1.0D) return super.use(world, user, hand);
 
 				IPlayerDataComponent component = user.getComponent(PlayerEXComponents.PLAYER_DATA);
 				if(world.isClient) {
